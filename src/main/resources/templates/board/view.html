@@ -44,7 +44,9 @@
                         data-bs-toggle="modal"
                         data-bs-target="#removeModal">삭제
                 </button>
-                <button class="class btn btn-primary">수정</button>
+                <a th:href="@{/board/edit(id=${board.id})}"
+                   class="btn btn-ountline-secondary">수정
+                </a>
             </div>
         </div>
     </div>
@@ -72,7 +74,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     취소
                 </button>
-                <button type="submit" form="removeForm" class="btn btn-dange">
+                <button type="submit" form="removeForm" class="btn btn-danger">
                     삭제
                 </button>
             </div>
