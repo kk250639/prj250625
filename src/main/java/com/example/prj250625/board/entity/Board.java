@@ -1,4 +1,4 @@
-package com.example.prj250625.entity;
+package com.example.prj250625.board.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

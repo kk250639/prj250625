@@ -1,10 +1,12 @@
-package com.example.prj250625.service;
+package com.example.prj250625.board.service;
 
 import com.example.prj250625.board.dto.BoardForm;
-import com.example.prj250625.dto.BoardListInfo;
-import com.example.prj250625.entity.Board;
-import com.example.prj250625.repository.BoardRepository;
+import com.example.prj250625.board.dto.BoardListInfo;
+import com.example.prj250625.board.entity.Board;
+import com.example.prj250625.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,9 +30,10 @@ public class BoardService {
 
     }
 
-    public List<BoardListInfo> list() {
+    public List<BoardListInfo> list(Integer page) {
 
-        List<BoardListInfo> boardList = boardRepository.findAllBy();
+        List<BoardListInfo> boardList = boardRepository
+                .findAllBy(PageRequest.of(page - 1, 10, Sort.by("id").descending()));
 
         return boardList;
     }
