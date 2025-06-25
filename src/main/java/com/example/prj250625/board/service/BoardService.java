@@ -61,6 +61,7 @@ public class BoardService {
         dto.setTitle(board.getTitle());
         dto.setContent(board.getContent());
         dto.setWriter(board.getWriter());
+        dto.setCreatedAt(board.getCreatedAt());
         return dto;
     }
 }

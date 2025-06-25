@@ -55,4 +55,6 @@ public class BoardController {
         // view로 forward
         return "board/view";
     }
+
+
 }
