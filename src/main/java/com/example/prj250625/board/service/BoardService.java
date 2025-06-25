@@ -64,4 +64,8 @@ public class BoardService {
         dto.setCreatedAt(board.getCreatedAt());
         return dto;
     }
+
+    public void remove(Integer id) {
+        boardRepository.deleteById(id);
+    }
 }
