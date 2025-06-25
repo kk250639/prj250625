@@ -12,3 +12,11 @@ CREATE TABLE board
 ALTER TABLE board
     MODIFY COLUMN created_at DATETIME DEFAULT CURRENT_TIME;
 DROP TABLE board;
+CREATE TABLE member
+(
+    id        INT AUTO_INCREMENT NOT NULL,
+    nick_name VARCHAR(10)        NOT NULL,
+    password  VARCHAR(16)        NOT NULL,
+    info      VARCHAR(10000)     NULL,
+    CONSTRAINT pk_member PRIMARY KEY (id)
+);

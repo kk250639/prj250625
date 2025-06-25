@@ -1,6 +1,8 @@
 package com.example.prj250625.member.controller;
 
 import com.example.prj250625.member.dto.MemberForm;
+import com.example.prj250625.member.service.MemberService;
+import com.sun.source.tree.MemberSelectTree;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,8 @@ import java.util.Map;
 @RequestMapping("member")
 public class MemberController {
 
+    private final MemberService memberService;
+
     @GetMapping("signup")
     public String signupForm() {
 
@@ -25,11 +29,13 @@ public class MemberController {
     @PostMapping("signup")
     public String signup(MemberForm data, RedirectAttributes rttr) {
         // service
-        System.out.println(data);
+
+        memberService.add(data);
 
         rttr.addFlashAttribute("alert", Map.of("code", "success",
                 "message", "회원 가입되었습니다."));
 
         return "redirect:/board/list";
     }
+
 }
