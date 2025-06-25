@@ -9,12 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.lang.invoke.MethodType;
-
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("board")
-public class BoardControll {
+public class BoardController {
 
 
     private final BoardService boardService;
@@ -31,7 +29,7 @@ public class BoardControll {
 
         boardService.add(data);
 
-        return "board/write";
+        return "redirect:/board/list";
     }
 
     @GetMapping("list")
@@ -39,7 +37,7 @@ public class BoardControll {
 
         var list = boardService.list();
         model.addAttribute("boardList", list);
-        
+
         return "board/list";
     }
 }
