@@ -38,9 +38,21 @@ public class BoardController {
                        Integer page,
                        Model model) {
 
-        var list = boardService.list(page);
-        model.addAttribute("boardList", list);
+        var result = boardService.list(page);
+        model.addAllAttributes(result);
 
         return "board/list";
+    }
+
+    @GetMapping("view")
+    public String view(Integer id, Model model) {
+
+        // service에게 일 시키고
+        var dto = boardService.get(id);
+
+        // model에 넣고
+        model.addAttribute("board", dto);
+        // view로 forward
+        return "board/view";
     }
 }

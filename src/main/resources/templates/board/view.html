@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>
+    <span th:text="${board.id}"></span>
+    게시물 보기
+</h2>
+<div>
+    <label for="titleInput">제목</label>
+    <input type="text" id="titleInput" th:value="${board.title}" readonly>
+</div>
+<div>
+    <label for="contentTextarea">본문</label>
+    <textarea type="text" id="contentTextarea" th:text="${board.content}" readonly cols="30" rows="10"></textarea>
+</div>
+<div>
+    <label for="writerInput">작성자</label>
+    <input type="text" id="writerInput" th:value="${board.writer}" readonly>
+</div>
+<div>
+    <label for="inputCreatedAt">작성일시</label>
+    <input type="text" id="inputCreatedAt" th:value="${board.createdAt}" readonly>
+</div>
+</body>
+</html>
