@@ -6,6 +6,8 @@ import com.example.prj250625.board.dto.BoardListInfo;
 import com.example.prj250625.board.entity.Board;
 import com.example.prj250625.board.repository.BoardRepository;
 import com.example.prj250625.member.dto.MemberDto;
+import com.example.prj250625.member.entity.Member;
+import com.example.prj250625.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,12 +25,16 @@ public class BoardService {
 
 
     private final BoardRepository boardRepository;
+    private final MemberRepository memberRepository;
 
     public void add(BoardForm formData, MemberDto user) {
         Board board = new Board();
         board.setTitle(formData.getTitle());
         board.setContent(formData.getContent());
-        board.setWriter(user.getId());
+//        board.setWriter(user.getId());
+        Member member = memberRepository.findById(user.getId()).get();
+        board.setWriter(member);
+
         boardRepository.save(board);
 
     }
@@ -60,7 +66,11 @@ public class BoardService {
         dto.setId(board.getId());
         dto.setTitle(board.getTitle());
         dto.setContent(board.getContent());
-        dto.setWriter(board.getWriter());
+        MemberDto memberDto = new MemberDto();
+        memberDto.setId(board.getWriter().getId());
+        memberDto.setNickName(board.getWriter().getNickName());
+
+        dto.setWriter(memberDto);
         dto.setCreatedAt(board.getCreatedAt());
         return dto;
     }
