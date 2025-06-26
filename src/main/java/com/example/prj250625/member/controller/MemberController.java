@@ -167,4 +167,6 @@ public class MemberController {
 
         return "redirect:/board/list";
     }
+
+
 }

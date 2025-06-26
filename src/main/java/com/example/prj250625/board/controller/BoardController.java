@@ -2,6 +2,7 @@ package com.example.prj250625.board.controller;
 
 import com.example.prj250625.board.dto.BoardForm;
 import com.example.prj250625.board.service.BoardService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,9 +23,17 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping("write")
-    public String writeForm() {
+    public String writeForm(HttpSession session, RedirectAttributes rttr) {
+        Object user = session.getAttribute("loggedInuser");
 
-        return "board/write";
+        if (user == null) {
+            return "board/write";
+        } else {
+            rttr.addFlashAttribute("alert",
+                    Map.of("code", "warning", "message", "로그인 후 글을 작성해주세요."));
+
+            return "redirect:/member/login";
+        }
     }
 
     @PostMapping("write")
