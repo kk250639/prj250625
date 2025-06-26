@@ -24,7 +24,7 @@ public class BoardController {
     public String writeForm(HttpSession session, RedirectAttributes rttr) {
         Object user = session.getAttribute("loggedInuser");
 
-        if (user == null) {
+        if (user != null) {
             return "board/write";
         } else {
             rttr.addFlashAttribute("alert",
