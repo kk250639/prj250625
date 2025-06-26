@@ -2,14 +2,12 @@ package com.example.prj250625.board.controller;
 
 import com.example.prj250625.board.dto.BoardForm;
 import com.example.prj250625.board.service.BoardService;
+import com.example.prj250625.member.dto.MemberDto;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Map;
@@ -37,15 +35,23 @@ public class BoardController {
     }
 
     @PostMapping("write")
-    public String writePost(BoardForm data, RedirectAttributes rttr) {
+    public String writePost(BoardForm data,
+                            @SessionAttribute(name = "loggedInUser", required = false)
+                            MemberDto user,
+                            RedirectAttributes rttr) {
+
         System.out.println("data = " + data);
 
-        boardService.add(data);
+        if (user != null) {
+            boardService.add(data, user);
 
-        rttr.addFlashAttribute("alert", Map.of("code", "primary",
-                "message", "새 게시물이 등록되었습니다."));
+            rttr.addFlashAttribute("alert", Map.of("code", "primary",
+                    "message", "새 게시물이 등록되었습니다."));
 
-        return "redirect:/board/list";
+            return "redirect:/board/list";
+        } else {
+            return "redirect:/member/login";
+        }
     }
 
     @GetMapping("list")
