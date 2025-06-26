@@ -55,4 +55,11 @@ public class MemberController {
 
         return "member/list";
     }
+
+    @GetMapping("view")
+    public String view(Model model, String id) {
+        model.addAttribute("member", memberService.get(id));
+
+        return "member/view";
+    }
 }

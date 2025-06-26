@@ -1,5 +1,6 @@
 package com.example.prj250625.member.service;
 
+import com.example.prj250625.member.dto.MemberDto;
 import com.example.prj250625.member.dto.MemberForm;
 import com.example.prj250625.member.dto.memberListInfo;
 import com.example.prj250625.member.entity.Member;
@@ -47,5 +48,17 @@ public class MemberService {
     public List<memberListInfo> list() {
 
         return memberRepository.findAllBy();
+    }
+
+    public MemberDto get(String id) {
+        Member member = memberRepository.findById(id).get();
+
+        MemberDto dto = new MemberDto();
+        dto.setId(member.getId());
+        dto.setNickName(member.getNickName());
+        dto.setInfo(member.getInfo());
+        dto.setCreatedAt(member.getCreatedAt());
+
+        return dto;
     }
 }

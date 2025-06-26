@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/main::commonHead(${member.id})}">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<nav th:replace="~{layout/main::pageNavbar('회원 목록')}"></nav>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col col-lg-6">
+            <h2 class="mb-3">회원 정보</h2>
+            <div class="mb-3">
+                <label for="inputId" class="form-label">아이디</label>
+                <input id="inputId" name="id" type="text" class="form-control" th:value="${member.id}" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="inputNickname" class="form-label">별명</label>
+                <input id="inputNickname" name="nickname" type="text" class="form-control" th:value="${member.nickName}"
+                       readonly>
+            </div>
+            <div class="mb-3">
+                <label for="textareaInfo" class="form-label">자기소개</label>
+                <input id="textareaInfo" name="info" type="text" class="form-control" th:value="${member.info}"
+                       readonly>
+            </div>
+            <div class="mb-3">
+                <label for="inputCreatedAt" class="form-label"></label>
+                <input id="inputCreatedAt" name="createdAt" type="text" class="form-control"
+                       th:value="${member.createdAt}" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{layout/main::commonScript}"/>
+</body>
+</html>
