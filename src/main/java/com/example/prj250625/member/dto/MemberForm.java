@@ -10,5 +10,4 @@ public class MemberForm {
     private String nickName;
     private String password;
     private String info;
-    private LocalDateTime createdAt;
 }

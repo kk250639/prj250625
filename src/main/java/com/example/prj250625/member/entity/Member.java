@@ -18,6 +18,7 @@ public class Member {
     private String nickName;
     private String password;
     private String info;
+    
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 }

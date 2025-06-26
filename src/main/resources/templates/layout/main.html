@@ -52,6 +52,14 @@
                             회원목록
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a th:href="@{/member/login}"
+                           class="nav-link"
+                           th:classappend="${current == 'login' ? 'active' : ''}"
+                        >
+                            로그인
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

@@ -74,4 +74,51 @@ public class MemberService {
             return false;
         }
     }
+
+    public boolean update(MemberForm data) {
+
+        Member member = memberRepository.findById(data.getId()).get();
+
+        String dbPw = member.getPassword();
+        String formPw = data.getPassword();
+        if (dbPw.equals(formPw)) {
+            // 변경
+            member.setNickName(data.getNickName());
+            member.setInfo(data.getInfo());
+            // 저장
+            memberRepository.save(member);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean updatePassword(String id, String oldPassword, String newPassword) {
+        Member db = memberRepository.findById(id).get();
+
+        String dbPw = db.getPassword();
+
+        if (dbPw.equals(oldPassword)) {
+            db.setPassword(newPassword);
+            memberRepository.save(db);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean login(String id, String password) {
+        Optional<Member> db = memberRepository.findById(id);
+
+        if (db.isPresent()) {
+            String dbPassword = db.get().getPassword();
+            if (dbPassword.equals(password)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 }
