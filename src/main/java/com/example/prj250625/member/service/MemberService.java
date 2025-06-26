@@ -1,6 +1,7 @@
 package com.example.prj250625.member.service;
 
 import com.example.prj250625.member.dto.MemberForm;
+import com.example.prj250625.member.dto.memberListInfo;
 import com.example.prj250625.member.entity.Member;
 import com.example.prj250625.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,5 +42,10 @@ public class MemberService {
             throw new DuplicateKeyException(data.getId() + "는 이미 있는 아이디입니다.");
         }
 
+    }
+
+    public List<memberListInfo> list() {
+
+        return memberRepository.findAllBy();
     }
 }
