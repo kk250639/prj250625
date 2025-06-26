@@ -2,7 +2,7 @@ package com.example.prj250625.member.service;
 
 import com.example.prj250625.member.dto.MemberDto;
 import com.example.prj250625.member.dto.MemberForm;
-import com.example.prj250625.member.dto.memberListInfo;
+import com.example.prj250625.member.dto.MemberListInfo;
 import com.example.prj250625.member.entity.Member;
 import com.example.prj250625.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +24,8 @@ public class MemberService {
 
         Optional<Member> db = memberRepository.findById(data.getId());
 
-        Optional<Member> byNickName = memberRepository.findByNickName(data.getNickName());
         if (db.isEmpty()) {
+            Optional<Member> byNickName = memberRepository.findByNickName(data.getNickName());
             if (byNickName.isEmpty()) {
                 // 새 엔티티객체 생성
                 Member member = new Member();
@@ -45,8 +45,7 @@ public class MemberService {
 
     }
 
-    public List<memberListInfo> list() {
-
+    public List<MemberListInfo> list() {
         return memberRepository.findAllBy();
     }
 
@@ -60,5 +59,19 @@ public class MemberService {
         dto.setCreatedAt(member.getCreatedAt());
 
         return dto;
+    }
+
+    public boolean remove(MemberForm data) {
+        Member member = memberRepository.findById(data.getId()).get();
+
+        String dbPw = member.getPassword();
+        String formPw = data.getPassword();
+
+        if (dbPw.equals(formPw)) {
+            memberRepository.delete(member);
+            return true;
+        } else {
+            return false;
+        }
     }
 }
