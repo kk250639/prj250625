@@ -15,10 +15,10 @@ DROP TABLE board;
 CREATE TABLE member
 (
     id         VARCHAR(10)    NOT NULL,
-    nick_name  VARCHAR(10)    NOT NULL,
+    nick_name  VARCHAR(10)    NOT NULL UNIQUE,
     password   VARCHAR(16)    NOT NULL,
     info       VARCHAR(10000) NULL,
-    created_at datetime       NULL,
+    created_at datetime       NULL DEFAULT NOW(),
     CONSTRAINT pk_member PRIMARY KEY (id)
 );
 DROP TABLE member;

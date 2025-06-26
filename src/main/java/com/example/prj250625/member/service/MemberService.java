@@ -21,18 +21,24 @@ public class MemberService {
 
         Optional<Member> db = memberRepository.findById(data.getId());
 
+        Optional<Member> byNickName = memberRepository.findByNickName(data.getNickName());
         if (db.isEmpty()) {
-            // 새 엔티티객체 생성
-            Member member = new Member();
-            // data에 있는 것 entity에 옮겨 담고
-            member.setId(data.getId());
-            member.setNickName(data.getNickName());
-            member.setPassword(data.getPassword());
-            member.setInfo(data.getInfo());
+            if (byNickName.isEmpty()) {
+                // 새 엔티티객체 생성
+                Member member = new Member();
+                // data에 있는 것 entity에 옮겨 담고
+                member.setId(data.getId());
+                member.setNickName(data.getNickName());
+                member.setPassword(data.getPassword());
+                member.setInfo(data.getInfo());
 
-            memberRepository.save(member);
+                memberRepository.save(member);
+            } else {
+                throw new DuplicateKeyException(data.getNickName() + "는 이미 있는 별명입니다.");
+            }
         } else {
             throw new DuplicateKeyException(data.getId() + "는 이미 있는 아이디입니다.");
         }
+
     }
 }
