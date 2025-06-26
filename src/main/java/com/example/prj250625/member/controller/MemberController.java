@@ -2,8 +2,8 @@ package com.example.prj250625.member.controller;
 
 import com.example.prj250625.member.dto.MemberForm;
 import com.example.prj250625.member.service.MemberService;
-import com.sun.source.tree.MemberSelectTree;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,12 +30,22 @@ public class MemberController {
     public String signup(MemberForm data, RedirectAttributes rttr) {
         // service
 
-        memberService.add(data);
+        try {
+            memberService.add(data);
 
-        rttr.addFlashAttribute("alert", Map.of("code", "success",
-                "message", "회원 가입되었습니다."));
+            rttr.addFlashAttribute("alert", Map.of("code", "success",
+                    "message", "회원 가입되었습니다."));
 
-        return "redirect:/board/list";
+            return "redirect:/board/list";
+        } catch (DuplicateKeyException e) {
+
+            rttr.addFlashAttribute("alert", Map.of("code", "warning",
+                    "message", e.getMessage()));
+
+            rttr.addFlashAttribute("member", data);
+
+            return "redirect:/member/signup";
+        }
+
     }
-
 }
