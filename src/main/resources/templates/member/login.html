@@ -15,11 +15,13 @@
             <form th:action="@{/member/login}" method="post">
                 <div class="mb-3">
                     <label for="inputId" class="form-label">아이디</label>
-                    <input type="text" class="form-control" id="inputId" name="id">
+                    <input type="text"
+                           th:value="${id == null ? '' : id}"
+                           class="form-control" id="inputId" name="id">
                 </div>
                 <div class="mb-3암호">
                     <label for="inputPassword" class="form-label">암호</label>
-                    <input type="text" class="form-control" id="inputPassword" name="password">
+                    <input type="password" class="form-control" id="inputPassword" name="password">
                 </div>
 
                 <div class="mb-3">

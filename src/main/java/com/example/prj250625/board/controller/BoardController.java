@@ -22,9 +22,10 @@ public class BoardController {
 
     @GetMapping("write")
     public String writeForm(HttpSession session, RedirectAttributes rttr) {
-        Object user = session.getAttribute("loggedInuser");
+        Object user = session.getAttribute("loggedInUser");
 
         if (user != null) {
+
             return "board/write";
         } else {
             rttr.addFlashAttribute("alert",
@@ -57,9 +58,11 @@ public class BoardController {
     @GetMapping("list")
     public String list(@RequestParam(defaultValue = "1")
                        Integer page,
+                       @RequestParam(defaultValue = "")
+                       String keyword,
                        Model model) {
-
-        var result = boardService.list(page);
+        // TODO
+        var result = boardService.list(page, keyword);
         model.addAllAttributes(result);
 
         return "board/list";

@@ -1,5 +1,6 @@
 package com.example.prj250625.member.service;
 
+import com.example.prj250625.board.repository.BoardRepository;
 import com.example.prj250625.member.dto.MemberDto;
 import com.example.prj250625.member.dto.MemberForm;
 import com.example.prj250625.member.dto.MemberListInfo;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final BoardRepository boardRepository;
 
     public void add(MemberForm data) {
 
@@ -62,38 +64,56 @@ public class MemberService {
         return dto;
     }
 
-    public boolean remove(MemberForm data) {
-        Member member = memberRepository.findById(data.getId()).get();
+    public boolean remove(MemberForm data, MemberDto user) {
+        if (user != null) {
+            Member member = memberRepository.findById(data.getId()).get();
+            if (member.getId().equals(user.getId())) {
+                String dbPw = member.getPassword();
+                String formPw = data.getPassword();
 
-        String dbPw = member.getPassword();
-        String formPw = data.getPassword();
-
-        if (dbPw.equals(formPw)) {
-            memberRepository.delete(member);
-            return true;
-        } else {
-            return false;
+                if (dbPw.equals(formPw)) {
+                    boardRepository.deleteByWriter(member);
+                    memberRepository.delete(member);
+                    return true;
+                }
+            }
         }
+        return false;
     }
 
-    public boolean update(MemberForm data) {
 
-        Member member = memberRepository.findById(data.getId()).get();
+    public boolean update(MemberForm data, MemberDto user, HttpSession session) {
 
-        String dbPw = member.getPassword();
-        String formPw = data.getPassword();
-        if (dbPw.equals(formPw)) {
-            // 변경
-            member.setNickName(data.getNickName());
-            member.setInfo(data.getInfo());
-            // 저장
-            memberRepository.save(member);
+        if (user != null) {
+            Member member = memberRepository.findById(data.getId()).get();
+            if (member.getId().equals(user.getId())) {
+                String dbPw = member.getPassword();
+                String formPw = data.getPassword();
+                if (dbPw.equals(formPw)) {
+                    // 변경
+                    member.setNickName(data.getNickName());
+                    member.setInfo(data.getInfo());
+                    // 저장
+                    memberRepository.save(member);
 
-            return true;
-        } else {
-            return false;
+                    addUserToSession(session, member);
+                    return true;
+                }
+            }
         }
+        return false;
     }
+
+    private void addUserToSession(HttpSession session, Member member) {
+        MemberDto dto = new MemberDto();
+        dto.setId(member.getId());
+        dto.setNickName(member.getNickName());
+        dto.setInfo(member.getInfo());
+        dto.setCreatedAt(member.getCreatedAt());
+
+        session.setAttribute("loggedInUser", dto);
+    }
+
 
     public boolean updatePassword(String id, String oldPassword, String newPassword) {
         Member db = memberRepository.findById(id).get();
@@ -117,13 +137,7 @@ public class MemberService {
             String dbPassword = db.get().getPassword();
             if (dbPassword.equals(password)) {
 
-                MemberDto dto = new MemberDto();
-                dto.setId(db.get().getId());
-                dto.setNickName(db.get().getNickName());
-                dto.setInfo(db.get().getInfo());
-                dto.setCreatedAt(db.get().getCreatedAt());
-
-                session.setAttribute("loggedInUser", dto);
+                addUserToSession(session, db.get());
 
                 return true;
             }

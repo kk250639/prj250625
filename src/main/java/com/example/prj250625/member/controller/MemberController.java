@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Map;
@@ -59,21 +60,41 @@ public class MemberController {
     }
 
     @GetMapping("view")
-    public String view(Model model, String id) {
-        model.addAttribute("member", memberService.get(id));
+    public String view(Model model,
+                       String id,
+                       RedirectAttributes rttr,
+                       @SessionAttribute(value = "loggedInUser", required = false)
+                       MemberDto user) {
 
-        return "member/view";
+        MemberDto member = memberService.get(id);
+
+        if (user != null) {
+            if (member.getId().equals(user.getId())) {
+                model.addAttribute("member", member);
+
+                return "member/view";
+            }
+        }
+        rttr.addFlashAttribute("alert",
+                Map.of("code", "warning", "message", "권한이 없습니다."));
+
+        return "redirect:/board/list";
     }
 
     @PostMapping("remove")
-    public String remove(MemberForm data, RedirectAttributes rttr) {
-
-        boolean result = memberService.remove(data);
+    public String remove(MemberForm data,
+                         @SessionAttribute(value = "loggedInUser", required = false)
+                         MemberDto user,
+                         HttpSession session,
+                         RedirectAttributes rttr) {
+        // TODO
+        boolean result = memberService.remove(data, user);
 
         if (result) {
             rttr.addFlashAttribute("alert", Map.of("code", "danger",
                     "message", data.getId() + "님 탈퇴 되었습니다."));
 
+            session.invalidate();
             return "redirect:/board/list";
         } else {
             rttr.addFlashAttribute("alert", Map.of("code", "danger",
@@ -85,16 +106,32 @@ public class MemberController {
         }
     }
 
+    // TODO
     @GetMapping("edit")
-    public String edit(Model model, String id) {
-        model.addAttribute("member", memberService.get(id));
-        return "member/edit";
+    public String edit(Model model, String id,
+                       @SessionAttribute(value = "loggedInUser", required = false)
+                       MemberDto user,
+                       RedirectAttributes rttr) {
+        MemberDto member = memberService.get(id);
+        if (user != null) {
+            if (member.getId().equals(user.getId())) {
+                model.addAttribute("member", member);
+                return "member/edit";
+            }
+        }
+        rttr.addFlashAttribute("alert", Map.of("code", "warning",
+                "message", "권한이 없습니다."));
+        return "redirect:/board/list";
     }
 
     @PostMapping("edit")
-    public String edit(MemberForm data, RedirectAttributes rttr) {
+    public String edit(MemberForm data,
+                       @SessionAttribute(value = "loggedInUser", required = false)
+                       MemberDto user,
+                       HttpSession session,
+                       RedirectAttributes rttr) {
 
-        boolean result = memberService.update(data);
+        boolean result = memberService.update(data, user, session);
 
         if (result) {
 
@@ -117,19 +154,24 @@ public class MemberController {
     public String changePassword(String id,
                                  String oldPassword,
                                  String newPassword,
+                                 @SessionAttribute(value = "loggedInUser", required = false)
+                                 MemberDto user,
                                  RedirectAttributes rttr) {
 
-        boolean result = memberService.updatePassword(id, oldPassword, newPassword);
+        if (user != null && user.getId().equals(id)) {
 
-        if (result) {
-            rttr.addFlashAttribute("alert",
-                    Map.of("code", "success", "message", "암호가 변경되었습니다."));
-        } else {
-            rttr.addFlashAttribute("alert",
-                    Map.of("code", "warning", "message", "암호가 일치하지 않습니다."));
+            boolean result = memberService.updatePassword(id, oldPassword, newPassword);
+
+            if (result) {
+                rttr.addFlashAttribute("alert",
+                        Map.of("code", "success", "message", "암호가 변경되었습니다."));
+            } else {
+                rttr.addFlashAttribute("alert",
+                        Map.of("code", "warning", "message", "암호가 일치하지 않습니다."));
+            }
         }
         rttr.addAttribute("id", id);
-        return "redirect:/member/view";
+        return "redirect:/member/edit";
     }
 
     @GetMapping("login")
@@ -153,6 +195,7 @@ public class MemberController {
         } else {
             rttr.addFlashAttribute("alert",
                     Map.of("code", "warning", "message", "아이디/패스워드가 일치하지 않습니다."));
+            rttr.addFlashAttribute("id", id);
             // 로그인 실패
             return "redirect:/member/login";
         }
