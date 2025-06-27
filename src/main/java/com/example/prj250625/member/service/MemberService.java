@@ -152,6 +152,8 @@ public class MemberService {
     public void saveAutoLoginToken(String id, String token) {
         Member member = memberRepository.findById(id).orElseThrow();
 
+        autoLoginTokenRepository.deleteAllByMember(member);
+
         AutoLoginToken entity = new AutoLoginToken();
         entity.setToken(token);
         entity.setMember(member);
