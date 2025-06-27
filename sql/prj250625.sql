@@ -1,12 +1,14 @@
-CREATE DATABASE prj250625;
-USE prj250625;
+CREATE
+DATABASE prj250625;
+USE
+prj250625;
 CREATE TABLE board
 (
     id         INT AUTO_INCREMENT NOT NULL,
-    title      VARCHAR(15)        NOT NULL,
-    content    VARCHAR(10000)     NOT NULL,
-    writer     VARCHAR(10)        NOT NULL,
-    created_at datetime           NULL DEFAULT NOW(),
+    title      VARCHAR(15)    NOT NULL,
+    content    VARCHAR(10000) NOT NULL,
+    writer     VARCHAR(10)    NOT NULL,
+    created_at datetime NULL DEFAULT NOW(),
     CONSTRAINT pk_board PRIMARY KEY (id)
 );
 ALTER TABLE board
@@ -14,11 +16,11 @@ ALTER TABLE board
 DROP TABLE board;
 CREATE TABLE member
 (
-    id         VARCHAR(10)    NOT NULL,
-    nick_name  VARCHAR(10)    NOT NULL UNIQUE,
-    password   VARCHAR(16)    NOT NULL,
+    id         VARCHAR(10) NOT NULL,
+    nick_name  VARCHAR(10) NOT NULL UNIQUE,
+    password   VARCHAR(16) NOT NULL,
     info       VARCHAR(10000) NULL,
-    created_at datetime       NULL DEFAULT NOW(),
+    created_at datetime NULL DEFAULT NOW(),
     CONSTRAINT pk_member PRIMARY KEY (id)
 );
 DROP TABLE member;
@@ -143,3 +145,12 @@ ALTER TABLE board
 INSERT INTO member (id, password, nick_name, info)
 VALUES ('ㅁㄴㅇ', 'dummy', '비회원A', '비회원 작성자'),
        ('ㅁㄴㅇㄴㅁㅇ', 'dummy', '비회원B', '비회원 작성자');
+
+CREATE TABLE auto_login_token
+(
+    token      VARCHAR(100) NOT NULL PRIMARY KEY,
+    member_id  VARCHAR(10)  NOT NULL,
+    created_at DATETIME DEFAULT NOW(),
+
+    FOREIGN KEY (member_id) REFERENCES member (id)
+);

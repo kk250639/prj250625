@@ -1,10 +1,12 @@
 package com.example.prj250625.member.service;
 
 import com.example.prj250625.board.repository.BoardRepository;
+import com.example.prj250625.member.AutoLoginToken;
 import com.example.prj250625.member.dto.MemberDto;
 import com.example.prj250625.member.dto.MemberForm;
 import com.example.prj250625.member.dto.MemberListInfo;
 import com.example.prj250625.member.entity.Member;
+import com.example.prj250625.member.repository.AutoLoginTokenRepository;
 import com.example.prj250625.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
+    private final AutoLoginTokenRepository autoLoginTokenRepository;
 
     public void add(MemberForm data) {
 
@@ -147,5 +150,25 @@ public class MemberService {
     }
 
     public void saveAutoLoginToken(String id, String token) {
+        Member member = memberRepository.findById(id).orElseThrow();
+
+        AutoLoginToken entity = new AutoLoginToken();
+        entity.setToken(token);
+        entity.setMember(member);
+        entity.setCreatedAt(member.getCreatedAt());
+
+        autoLoginTokenRepository.save(entity);
+    }
+
+
+    public String findIdByAutoLoginToken(String token) {
+        return autoLoginTokenRepository.findById(token)
+                .map(t -> t.getMember().getId())
+                .orElse(null);
+    }
+
+    public void removeAutoLoginToken(String token) {
+        autoLoginTokenRepository.deleteById(token);
     }
 }
+

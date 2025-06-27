@@ -176,8 +176,18 @@ public class MemberController {
 
     @GetMapping("login")
     public String loginForm(@CookieValue(value = "rememberId", required = false)
+                            String autoLoginToken,
+                            @CookieValue(value = "rememberId", required = false)
                             String rememberId,
+                            HttpSession session,
                             Model model) {
+        if (autoLoginToken != null) {
+            String id = memberService.findIdByAutoLoginToken(autoLoginToken);
+            if (id != null) {
+                memberService.login(id, null, session);
+                return "redirect:/board/list";
+            }
+        }
         model.addAttribute("id", rememberId);
         return "member/login";
     }
@@ -209,6 +219,7 @@ public class MemberController {
             if (loginMaintain != null) {
                 String token = UUID.randomUUID().toString();
                 memberService.saveAutoLoginToken(id, token);
+
                 Cookie autoLoginCookie = new Cookie("autoLogin", token);
                 autoLoginCookie.setMaxAge(Integer.MAX_VALUE);
                 autoLoginCookie.setPath("/");
@@ -227,9 +238,20 @@ public class MemberController {
     }
 
     @RequestMapping("logout")
-    public String logout(HttpSession session, RedirectAttributes rttr) {
+    public String logout(HttpSession session,
+                         @CookieValue(value = "autoLogin", required = false)
+                         String autoLoginToken,
+                         RedirectAttributes rttr,
+                         HttpServletResponse response) {
         session.invalidate();
 
+        if (autoLoginToken != null) {
+            memberService.removeAutoLoginToken(autoLoginToken);
+            Cookie cookie = new Cookie("autoLogin", null);
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+        }
         rttr.addFlashAttribute("alert",
                 Map.of("code", "success", "message", "로그아웃 되었습니다."));
 
