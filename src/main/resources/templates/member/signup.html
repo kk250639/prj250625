@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/main::commonHead('회원가입')}">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<nav th:replace="~{layout/main::pageNavbar('signup')}"></nav>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col col-lg-6">
+            <h2 class="mb-3">회원 가입</h2>
+            <form th:action="@{/member/signup}" method="post" class="mb-3">
+                <div class="mb-3">
+                    <label class="form-label" for="inputId">아이디</label>
+                    <input th:value="${member == null ? '' : member.id}" class="form-control" type="text" id="inputId"
+                           name="id">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="inputPassword">암호</label>
+                    <input th:value="${member == null ? '' : member.password}" class="form-control" type="text"
+                           id="inputPassword" name="password">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="inputNickname">별명</label>
+                    <input th:value="${member == null ? '' : member.nickName}" class="form-control" type="text"
+                           id="inputNickname" name="nickName">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="textareaInfo">자기소개</label>
+                    <textarea th:text="${member == null ? '' : member.info}" class="form-control" name="info"
+                              id="textareaInfo" rows="10"></textarea>
+                </div>
+                <div>
+                    <button class="btn btn-primary">가입</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{layout/main::commonScript}"/>
+</body>
+</html>
