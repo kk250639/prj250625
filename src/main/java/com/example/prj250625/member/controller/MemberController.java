@@ -222,7 +222,7 @@ public class MemberController {
         rttr.addFlashAttribute("alert",
                 Map.of("code", "success", "message", "로그아웃 되었습니다."));
 
-        return "redirect:/board/list";
+        return "redirect:/member/login";
     }
 
 
