@@ -19,11 +19,20 @@
                            th:value="${id == null ? '' : id}"
                            class="form-control" id="inputId" name="id">
                 </div>
-                <div class="mb-3암호">
+                <div class="mb-3">
                     <label for="inputPassword" class="form-label">암호</label>
                     <input type="password" class="form-control" id="inputPassword" name="password">
                 </div>
-
+                <div class="form-check mb-3">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="rememberCheckbox"
+                           name="remember"
+                           th:checked="${id != null}">
+                    <label class="form-check-label" for="rememberCheckbox">
+                        항상 아이디 기억하기
+                    </label>
+                </div>
                 <div class="mb-3">
                     <button class="btn btn-primary">로그인</button>
                 </div>

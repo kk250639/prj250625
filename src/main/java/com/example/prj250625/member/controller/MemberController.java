@@ -3,15 +3,14 @@ package com.example.prj250625.member.controller;
 import com.example.prj250625.member.dto.MemberDto;
 import com.example.prj250625.member.dto.MemberForm;
 import com.example.prj250625.member.service.MemberService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Map;
@@ -175,22 +174,37 @@ public class MemberController {
     }
 
     @GetMapping("login")
-    public String loginForm() {
-
+    public String loginForm(@CookieValue(value = "rememberId", required = false)
+                            String rememberId,
+                            Model model) {
+        model.addAttribute("id", rememberId);
         return "member/login";
     }
 
     @PostMapping("login")
     public String loginProcess(String id, String password,
+                               @RequestParam(value = "remember", required = false)
+                               String remember, // ← 추가
                                HttpSession session,
-                               RedirectAttributes rttr) {
+                               RedirectAttributes rttr,
+                               HttpServletResponse response) {
 
         boolean result = memberService.login(id, password, session);
 
         if (result) {
+            if (remember != null) {
+                Cookie rememberCookie = new Cookie("rememberId", id);
+                rememberCookie.setMaxAge(Integer.MAX_VALUE);
+                rememberCookie.setPath("/");
+                response.addCookie(rememberCookie);
+            } else {
+                Cookie deleteCookie = new Cookie("rememberId", null);
+                deleteCookie.setMaxAge(0);
+                deleteCookie.setPath("/");
+                response.addCookie(deleteCookie);
+            }
             rttr.addFlashAttribute("alert",
                     Map.of("code", "success", "message", "로그인 되었습니다."));
-            // 로그인 성공
             return "redirect:/board/list";
         } else {
             rttr.addFlashAttribute("alert",
