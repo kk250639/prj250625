@@ -84,7 +84,7 @@ public class MemberController {
             return "redirect:/member/view";
         }
     }
-
+sd
     @GetMapping("edit")
     public String edit(Model model, String id) {
         model.addAttribute("member", memberService.get(id));
