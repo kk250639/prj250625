@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -183,8 +184,10 @@ public class MemberController {
 
     @PostMapping("login")
     public String loginProcess(String id, String password,
+                               @RequestParam(value = "loginMaintain", required = false)
+                               String loginMaintain,
                                @RequestParam(value = "remember", required = false)
-                               String remember, // ← 추가
+                               String remember,
                                HttpSession session,
                                RedirectAttributes rttr,
                                HttpServletResponse response) {
@@ -202,6 +205,14 @@ public class MemberController {
                 deleteCookie.setMaxAge(0);
                 deleteCookie.setPath("/");
                 response.addCookie(deleteCookie);
+            }
+            if (loginMaintain != null) {
+                String token = UUID.randomUUID().toString();
+                memberService.saveAutoLoginToken(id, token);
+                Cookie autoLoginCookie = new Cookie("autoLogin", token);
+                autoLoginCookie.setMaxAge(Integer.MAX_VALUE);
+                autoLoginCookie.setPath("/");
+                response.addCookie(autoLoginCookie);
             }
             rttr.addFlashAttribute("alert",
                     Map.of("code", "success", "message", "로그인 되었습니다."));

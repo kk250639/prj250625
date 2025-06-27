@@ -145,4 +145,7 @@ public class MemberService {
 
         return false;
     }
+
+    public void saveAutoLoginToken(String id, String token) {
+    }
 }
