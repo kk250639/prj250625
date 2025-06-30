@@ -55,31 +55,27 @@ public class BoardService {
         List<BoardListInfo> boardList = boardPage.getContent();
 
         List<Integer> pageList = new ArrayList<>();
-
         int totalPages = boardPage.getTotalPages();
+        int displayCount = 5;
 
-        if (totalPages <= 10) {
-            for (int i = 1; i <= totalPages; i++) {
-                pageList.add(i);
+        int start = page;
+        int end = Math.min(page + displayCount - 1, totalPages - 2); // 마지막 2개는 따로
+
+        // 현재 페이지부터 최대 displayCount개
+        for (int i = start; i <= end; i++) {
+            pageList.add(i);
+        }
+
+        if (end < totalPages - 2) {
+            pageList.add(-1); // ... 표시
+        }
+        // 마지막 2개 페이지 (중복 방지해서 추가)
+        if (totalPages >= 2) {
+            if (!pageList.contains(totalPages - 1)) {
+                pageList.add(totalPages - 1);
             }
-        } else {
-            pageList.add(1); // 첫 페이지
-
-            if (page > 5) {
-                pageList.add(-1); // ... 표시
-            }
-
-            int start = Math.max(2, page - 1);
-            int end = Math.min(totalPages - 1, page + 1);
-
-            for (int i = start; i <= end; i++) {
-                pageList.add(i);
-            }
-
-            if (page < totalPages -4) {
-                pageList.add(-1); // ... 표시
-            }
-
+        }
+        if (!pageList.contains(totalPages)) {
             pageList.add(totalPages);
         }
 
