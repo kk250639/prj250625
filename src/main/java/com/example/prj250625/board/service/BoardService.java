@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +54,35 @@ public class BoardService {
         }
         List<BoardListInfo> boardList = boardPage.getContent();
 
+        List<Integer> pageList = new ArrayList<>();
+
+        int totalPages = boardPage.getTotalPages();
+
+        if (totalPages <= 10) {
+            for (int i = 1; i <= totalPages; i++) {
+                pageList.add(i);
+            }
+        } else {
+            pageList.add(1); // 첫 페이지
+
+            if (page > 5) {
+                pageList.add(-1); // ... 표시
+            }
+
+            int start = Math.max(2, page - 1);
+            int end = Math.min(totalPages - 1, page + 1);
+
+            for (int i = start; i <= end; i++) {
+                pageList.add(i);
+            }
+
+            if (page < totalPages -4) {
+                pageList.add(-1); // ... 표시
+            }
+
+            pageList.add(totalPages);
+        }
+
         Integer rightPageNumber = ((page - 1) / 10 + 1) * 10;
         Integer leftPageNumber = rightPageNumber - 9;
         rightPageNumber = Math.min(rightPageNumber, boardPage.getTotalPages());
@@ -60,6 +90,7 @@ public class BoardService {
         var result = Map.of("boardList", boardList,
                 "totalElements", boardPage.getTotalElements(),
                 "totalPages", boardPage.getTotalPages(),
+                "pageList", pageList,
                 "rightPageNumber", rightPageNumber,
                 "leftPageNumber", leftPageNumber,
                 "currentPage", page);
