@@ -38,6 +38,11 @@
             <!--  bootstrap/components/pagination/working with icons  -->
             <nav>
                 <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <a class="page-link" th:href="@{/board/list(page=1,keyword=${param.keyword})}">
+                            <span>처음으로</span>
+                        </a>
+                    </li>
                     <li class="page-item"
                         th:if="${currentPage > 1}">
                         <a class="page-link"
