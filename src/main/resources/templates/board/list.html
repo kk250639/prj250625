@@ -47,6 +47,13 @@
                         </a>
                     </li>
                     <li class="page-item"
+                        th:if="${leftPageNumber > 1}">
+                        <a class="page-link"
+                           th:href="@{/board/list(page=${currentPage - 1}, keyword=${keyword})}">
+                            <span>&lt;</span>
+                        </a>
+                    </li>
+                    <li class="page-item"
                         th:each="pageNumber : ${pageList}"
                         th:classappend="${(currentPage == pageNumber) ? 'active' : ''}">
 
@@ -57,6 +64,13 @@
 
                         <span class="page-link"
                               th:if="${pageNumber == -1}">...</span>
+                    </li>
+                    <li class="page-item"
+                        th:if="${currentPage < totalPages}">
+                        <a class="page-link"
+                           th:href="@{/board/list(page=${currentPage + 1}, keyword=${keyword})}">
+                            <span>&gt;</span>
+                        </a>
                     </li>
                     <li class="page-item"
                         th:if="${(rightPageNumber + 1) <= totalPages}">
