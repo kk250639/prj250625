@@ -44,9 +44,10 @@
                         </a>
                     </li>
                     <li class="page-item"
-                        th:if="${currentPage > 1}">
+                        th:if="${leftPageNumber > 10}">
                         <a class="page-link"
-                           th:href="@{/board/list(page=${T(java.lang.Math).max(1, leftPageNumber - 10)},keyword=${param.keyword})}">
+                           th:href="@{/board/list(page=${leftPageNumber
+                           - 10},keyword=${param.keyword})}">
                             <span>&laquo;</span>
                         </a>
                     </li>
@@ -77,9 +78,10 @@
                         </a>
                     </li>
                     <li class="page-item"
-                        th:if="${currentPage < totalPages}">
+                        th:if="${(rightPageNumber + 1) <= totalPages}">
                         <a class="page-link"
-                           th:href="@{/board/list(page=${T(java.lang.Math).min(totalPages, rightPageNumber + 10)},keyword=${param.keyword})}">
+                           th:href="@{/board/list(page=${rightPageNumber +
+                           1},keyword=${param.keyword})}">
                             <span>&raquo;</span>
                         </a>
                     </li>
